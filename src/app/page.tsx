@@ -1,11 +1,18 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { getLoggedInUserId } from '@/lib/session';
 
 export const metadata = {
   title: 'Blue Hour - Welcome',
   description: 'A gentle, private space to reflect and track how you feel over time.',
 };
 
-export default function Home() {
+export default async function Home() {
+  // If user is logged in, redirect to check-in page
+  const userId = await getLoggedInUserId();
+  if (userId) {
+    redirect('/checkin');
+  }
   return (
     <main className="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-emerald-50">
       {/* Decorative Elements */}
