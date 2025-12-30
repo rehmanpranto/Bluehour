@@ -138,12 +138,12 @@ export default function CheckInForm({ onSuccess }: CheckInFormProps) {
     value: number;
     description?: string;
   }) => (
-    <div className="space-y-3 p-4 rounded-xl bg-gray-50 border border-gray-200">
+    <div className="space-y-2 sm:space-y-3 p-3 sm:p-4 rounded-xl bg-gray-50 border border-gray-200">
       <label className="block text-sm font-semibold text-gray-900">{label}</label>
       {description && (
         <p className="text-xs text-gray-500">{description}</p>
       )}
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         <input
           type="range"
           name={name}
@@ -151,11 +151,11 @@ export default function CheckInForm({ onSuccess }: CheckInFormProps) {
           max="10"
           value={value}
           onChange={handleChange}
-          className="w-full h-3 bg-gradient-to-r from-red-200 via-yellow-200 to-emerald-200 rounded-lg appearance-none cursor-pointer accent-teal-500"
+          className="w-full h-2 sm:h-3 bg-gradient-to-r from-red-200 via-yellow-200 to-emerald-200 rounded-lg appearance-none cursor-pointer accent-teal-500 touch-manipulation"
         />
         <div className="flex items-center justify-between">
           <span className="text-xs text-gray-500">Low</span>
-          <span className="text-lg font-bold text-teal-700">{value}/10</span>
+          <span className="text-base sm:text-lg font-bold text-teal-700">{value}/10</span>
           <span className="text-xs text-gray-500">High</span>
         </div>
       </div>
@@ -163,11 +163,11 @@ export default function CheckInForm({ onSuccess }: CheckInFormProps) {
   );
 
   return (
-    <form onSubmit={handleSubmit} className="w-full space-y-6">
+    <form onSubmit={handleSubmit} className="w-full space-y-4 sm:space-y-6">
       {/* Message Display */}
       {message && (
         <div
-          className={`rounded-lg p-4 text-sm font-medium ${
+          className={`rounded-lg p-3 sm:p-4 text-sm font-medium ${
             message.type === 'success'
               ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
               : 'bg-red-50 text-red-800 border border-red-200'
@@ -188,12 +188,12 @@ export default function CheckInForm({ onSuccess }: CheckInFormProps) {
             name="entry_date"
             value={formData.entry_date}
             onChange={handleChange}
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-gray-900 focus:ring-2 focus:ring-teal-400 focus:border-transparent transition"
+            className="flex-1 rounded-lg border border-gray-300 px-3 sm:px-4 py-2 text-sm sm:text-base text-gray-900 focus:ring-2 focus:ring-teal-400 focus:border-transparent transition touch-manipulation"
           />
           <button
             type="button"
             onClick={handleSetToday}
-            className="rounded-lg bg-teal-100 px-4 py-2 text-sm font-medium text-teal-700 hover:bg-teal-200 transition"
+            className="rounded-lg bg-teal-100 px-3 sm:px-4 py-2 text-sm font-medium text-teal-700 hover:bg-teal-200 transition active:scale-95 touch-manipulation"
           >
             Today
           </button>
@@ -211,14 +211,14 @@ export default function CheckInForm({ onSuccess }: CheckInFormProps) {
           placeholder="e.g., morning, evening, before bed..."
           value={formData.entry_time_label}
           onChange={handleChange}
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-teal-400 focus:border-transparent transition"
+          className="w-full rounded-lg border border-gray-300 px-3 sm:px-4 py-2 text-sm sm:text-base text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-teal-400 focus:border-transparent transition touch-manipulation"
         />
       </div>
 
       {/* Scale Inputs */}
       <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">📊 How are you feeling?</h3>
-        <div className="grid gap-4 md:grid-cols-3">
+        <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4">📊 How are you feeling?</h3>
+        <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
           <ScaleInput
             label="Mood"
             name="mood"
@@ -252,7 +252,7 @@ export default function CheckInForm({ onSuccess }: CheckInFormProps) {
           onChange={handleChange}
           maxLength={2000}
           rows={4}
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900 placeholder-gray-400 resize-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition"
+          className="w-full rounded-lg border border-gray-300 px-3 sm:px-4 py-2 text-sm sm:text-base text-gray-900 placeholder-gray-400 resize-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition touch-manipulation"
         />
         <p className="text-xs text-gray-500 text-right">
           {formData.notes.length} / 2000
@@ -273,7 +273,7 @@ export default function CheckInForm({ onSuccess }: CheckInFormProps) {
           placeholder="e.g., work stress, lack of sleep, conflict"
           value={formData.triggers}
           onChange={handleChange}
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-teal-400 focus:border-transparent transition"
+          className="w-full rounded-lg border border-gray-300 px-3 sm:px-4 py-2 text-sm sm:text-base text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-teal-400 focus:border-transparent transition touch-manipulation"
         />
       </div>
 
@@ -291,19 +291,19 @@ export default function CheckInForm({ onSuccess }: CheckInFormProps) {
           placeholder="e.g., exercise, talking to a friend, rest"
           value={formData.helped}
           onChange={handleChange}
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-teal-400 focus:border-transparent transition"
+          className="w-full rounded-lg border border-gray-300 px-3 sm:px-4 py-2 text-sm sm:text-base text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-teal-400 focus:border-transparent transition touch-manipulation"
         />
       </div>
 
       {/* Safety Toggle */}
-      <div className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200">
+      <div className="flex items-center gap-3 p-3 sm:p-4 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200">
         <input
           type="checkbox"
           id="felt_safe"
           name="felt_safe"
           checked={formData.felt_safe}
           onChange={handleChange}
-          className="w-5 h-5 rounded border-gray-300 text-emerald-600 cursor-pointer accent-emerald-500"
+          className="w-5 h-5 rounded border-gray-300 text-emerald-600 cursor-pointer accent-emerald-500 touch-manipulation"
         />
         <label htmlFor="felt_safe" className="text-sm font-semibold text-gray-900 cursor-pointer">
           ✅ I feel safe right now
@@ -314,7 +314,7 @@ export default function CheckInForm({ onSuccess }: CheckInFormProps) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 px-6 py-3 font-semibold text-white transition hover:from-teal-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl active:scale-95 transform"
+        className="w-full rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 px-6 py-3 sm:py-4 text-base sm:text-lg font-semibold text-white transition hover:from-teal-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl active:scale-95 transform touch-manipulation"
       >
         {loading ? '💾 Saving...' : '📝 Save Reflection'}
       </button>

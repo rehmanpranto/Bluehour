@@ -31,39 +31,42 @@ export default function RootLayout({
         <div className="flex flex-col min-h-screen">
           {/* Header Navigation */}
           <header className="border-b border-teal-100 bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-            <nav className="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between">
+            <nav className="mx-auto max-w-6xl px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
               <a
                 href="/"
-                className="text-2xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent hover:from-teal-700 hover:to-cyan-700 transition"
+                className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent hover:from-teal-700 hover:to-cyan-700 transition"
               >
                 🌊 Blue Hour
               </a>
-              <div className="flex gap-8 items-center">
+              <div className="flex gap-3 sm:gap-6 md:gap-8 items-center">
                 <a
                   href="/checkin"
-                  className="text-sm font-semibold text-gray-700 hover:text-teal-700 transition relative group"
+                  className="text-xs sm:text-sm font-semibold text-gray-700 hover:text-teal-700 transition relative group"
                 >
-                  Check-in
+                  <span className="hidden sm:inline">Check-in</span>
+                  <span className="sm:hidden">📝</span>
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-teal-500 group-hover:w-full transition-all duration-300"></span>
                 </a>
 
                 <a
                   href="/history"
-                  className="text-sm font-semibold text-gray-700 hover:text-teal-700 transition relative group"
+                  className="text-xs sm:text-sm font-semibold text-gray-700 hover:text-teal-700 transition relative group"
                 >
-                  History
+                  <span className="hidden sm:inline">History</span>
+                  <span className="sm:hidden">📖</span>
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-teal-500 group-hover:w-full transition-all duration-300"></span>
                 </a>
 
                 <a
                   href="/report"
-                  className="text-sm font-semibold text-gray-700 hover:text-teal-700 transition relative group"
+                  className="text-xs sm:text-sm font-semibold text-gray-700 hover:text-teal-700 transition relative group"
                 >
-                  7-day report
+                  <span className="hidden md:inline">7-day report</span>
+                  <span className="md:hidden">📈</span>
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-teal-500 group-hover:w-full transition-all duration-300"></span>
                 </a>
 
-                <div className="h-6 w-px bg-gray-300"></div>
+                <div className="h-4 sm:h-6 w-px bg-gray-300"></div>
                 <UserMenu />
               </div>
             </nav>
