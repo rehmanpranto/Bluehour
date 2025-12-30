@@ -1,11 +1,24 @@
-# Rideeta - Mood Logging Web App
+# Bluehour - Mood Logging Web App
 
 A production-ready, trauma-informed mood logging application built with Next.js, TypeScript, Tailwind CSS, and PostgreSQL (Neon).
 
 ## Features
 
-### 1. **Check-in Form** (Home Page)
-- Simple, gentle interface for logging moods
+### 1. **Authentication**
+- Secure login and signup system
+- Password hashing with bcryptjs
+- Cookie-based session management
+- Test account for development: `test@bluehour.local` / `test12345`
+- User-scoped data (all entries tied to authenticated users)
+
+### 2. **Landing Page**
+- Gentle, welcoming interface for new users
+- Clear value propositions: Private, Gentle, See patterns
+- Quick access to login/signup
+- Preview of History and 7-Day Report features
+
+### 3. **Check-in Form**
+- Simple, gentle interface for logging moods (requires authentication)
 - Date picker (defaults to today)
 - Optional time of day label (morning, evening, etc.)
 - Three 1-10 scales: Mood, Anxiety, Energy (with sliders and dropdowns)
@@ -14,8 +27,8 @@ A production-ready, trauma-informed mood logging application built with Next.js,
 - Safety toggle: "I feel safe right now"
 - Gentle confirmation message on successful save
 
-### 2. **History Page**
-- View all entries sorted by date (newest first)
+### 4. **History Page**
+- View all your entries sorted by date (newest first)
 - Filter by:
   - Low mood (≤3)
   - High anxiety (≥8)
@@ -24,17 +37,26 @@ A production-ready, trauma-informed mood logging application built with Next.js,
 - Delete entries with confirmation
 - Beautiful, readable card layout
 
-### 3. **Data Management**
-- **Export**: Download all entries as JSON file
+### 5. **7-Day Report**
+- Aggregated view of the past 7 days
+- Daily breakdown with averages for mood, anxiety, and energy
+- Safety percentage for each day
+- Summary statistics: overall averages and safe days percentage
+- Helpful insights into patterns over the week
+
+### 6. **Data Management**
+- **Export**: Download all your entries as JSON file
 - **Import**: Restore entries from a JSON backup (merge by ID to avoid duplicates)
 - Simple one-click backup and restore
 
-### 4. **Privacy & Security**
+### 7. **Privacy & Security**
+- User authentication required for all mood entries
 - Server-side only database access (DATABASE_URL never exposed to browser)
 - Parameterized queries (no SQL injection vulnerabilities)
 - Input validation with Zod schemas
 - Basic rate limiting (30 requests/minute per IP)
-- Structured for future auth implementation
+- Password hashing with bcryptjs
+- httpOnly cookies for session management
 
 ## Tech Stack
 
@@ -52,29 +74,51 @@ blue_hour/
 ├── src/
 │   ├── app/
 │   │   ├── api/
+│   │   │   ├── auth/
+│   │   │   │   ├── login/
+│   │   │   │   │   └── route.ts      # POST login
+│   │   │   │   ├── logout/
+│   │   │   │   │   └── route.ts      # POST logout
+│   │   │   │   └── signup/
+│   │   │   │       └── route.ts      # POST signup
 │   │   │   ├── entries/
-│   │   │   │   ├── route.ts          # POST (create), GET (list with filters)
+│   │   │   │   ├── route.ts          # POST (create), GET (list with filters) - requires auth
 │   │   │   │   └── [id]/
-│   │   │   │       └── route.ts      # DELETE entry
+│   │   │   │       └── route.ts      # DELETE entry - requires auth
 │   │   │   ├── export/
-│   │   │   │   └── route.ts          # GET (export all as JSON)
-│   │   │   └── import/
-│   │   │       └── route.ts          # POST (import and merge JSON)
+│   │   │   │   └── route.ts          # GET (export all as JSON) - requires auth
+│   │   │   ├── import/
+│   │   │   │   └── route.ts          # POST (import and merge JSON) - requires auth
+│   │   │   └── migrations/
+│   │   │       └── route.ts          # POST (run database migrations)
+│   │   ├── auth/
+│   │   │   └── login/
+│   │   │       └── page.tsx          # Login/signup page
+│   │   ├── checkin/
+│   │   │   └── page.tsx              # Check-in form page
 │   │   ├── history/
 │   │   │   └── page.tsx              # History page
+│   │   ├── report/
+│   │   │   └── page.tsx              # 7-Day report page
 │   │   ├── layout.tsx                # Root layout with navigation
-│   │   ├── page.tsx                  # Home check-in page
+│   │   ├── page.tsx                  # Landing page
 │   │   └── globals.css               # Global Tailwind styles
 │   ├── components/
 │   │   ├── CheckInForm.tsx           # Check-in form component
+│   │   ├── ExportImport.tsx          # Export/import controls
 │   │   ├── HistoryList.tsx           # History list with filters
-│   │   └── ExportImport.tsx          # Export/import controls
+│   │   ├── LoginForm.tsx             # Login/signup form with test account
+│   │   └── UserMenu.tsx              # User menu with logout
 │   └── lib/
+│       ├── auth.ts                   # Authentication helpers
 │       ├── db.ts                     # Database connection & query helpers
+│       ├── migrations.ts             # Migration runner
+│       ├── rate-limit.ts             # Simple rate limiter
 │       ├── schemas.ts                # Zod validation schemas
-│       └── rate-limit.ts             # Simple rate limiter
+│       └── session.ts                # Session management
 ├── migrations/
-│   └── 001_create_mood_entries.sql   # Database schema
+│   ├── 001_create_mood_entries.sql   # Initial database schema
+│   └── 002_add_user_authentication.sql # User authentication tables
 ├── .env.local                         # (Create locally) Database connection
 ├── package.json
 ├── tsconfig.json
@@ -113,23 +157,36 @@ DATABASE_URL=postgresql://user:password@host/dbname
 
 ### 4. Run Database Migration
 
-```bash
-# Using psql directly
-psql -d your_database_name -f migrations/001_create_mood_entries.sql
+You can run migrations via the API endpoint or manually with psql.
 
-# Or if using Neon web interface:
-# 1. Copy the SQL from migrations/001_create_mood_entries.sql
-# 2. Paste it into the Neon SQL editor
-# 3. Run the query
+**Option 1: Via API (Recommended)**
+```bash
+# Start the dev server
+npm run dev
+
+# In another terminal, run migrations
+curl -X POST http://localhost:3000/api/migrations
 ```
 
-Verify the table was created:
+**Option 2: Manual psql**
+```bash
+# Run both migrations in order
+psql -d your_database_name -f migrations/001_create_mood_entries.sql
+psql -d your_database_name -f migrations/002_add_user_authentication.sql
+
+# Or if using Neon web interface:
+# 1. Copy the SQL from each migration file
+# 2. Paste it into the Neon SQL editor
+# 3. Run the queries in order
+```
+
+Verify the tables were created:
 
 ```bash
 psql -d your_database_name -c "\dt"
 ```
 
-You should see `mood_entries` table listed.
+You should see `mood_entries` and `users` tables listed.
 
 ### 5. Install Dependencies
 
@@ -152,24 +209,39 @@ You should see:
 
 ### 7. Test the App
 
-1. **Create an entry**:
-   - Fill in the form on the home page
+1. **Create an account or use test account**:
+   - Go to [http://localhost:3000](http://localhost:3000)
+   - Click "Login / Create account"
+   - For testing: Click "Use Test Account" button (test@bluehour.local / test12345)
+   - Or sign up with your own email and password
+
+2. **Log in**:
+   - After login, you'll be automatically redirected to the check-in page
+   - Fill in the mood check-in form
    - Click "Save Reflection"
    - You should see a confirmation message
 
-2. **View history**:
+3. **View history**:
    - Click "History" in the navigation
-   - See your entry in the list
+   - See your entries in the list
 
-3. **Filter entries**:
-   - Use the filter buttons (Low Mood, High Anxiety, Not Safe)
+4. **View 7-day report**:
+   - Click "7-Day Report" in the navigation
+   - See aggregated statistics for the past week
 
-4. **Export data**:
+5. **Filter entries**:
+   - On the History page, use the filter buttons (Low Mood, High Anxiety, Not Safe)
+
+6. **Export data**:
    - Click "Export Entries" to download JSON
 
-5. **Delete an entry**:
+7. **Delete an entry**:
    - Click "Delete" on any entry
    - Confirm when prompted
+
+8. **Log out**:
+   - Click your email in the top right
+   - Select "Log out"
 
 ## Deployment (Vercel)
 
@@ -214,8 +286,64 @@ You should see:
 
 ## API Endpoints
 
-### POST /api/entries
-Create a new mood entry.
+### Authentication
+
+#### POST /api/auth/signup
+Create a new user account.
+
+**Request**:
+```json
+{
+  "email": "user@example.com",
+  "password": "securepassword",
+  "fullName": "John Doe"
+}
+```
+
+**Response** (201):
+```json
+{
+  "id": "uuid-here",
+  "email": "user@example.com",
+  "fullName": "John Doe"
+}
+```
+
+#### POST /api/auth/login
+Authenticate a user and create a session.
+
+**Request**:
+```json
+{
+  "email": "user@example.com",
+  "password": "securepassword"
+}
+```
+
+**Response** (200):
+```json
+{
+  "userId": "uuid-here",
+  "email": "user@example.com"
+}
+```
+
+**Note**: In development mode, the test account (test@bluehour.local / test12345) is auto-created if it doesn't exist.
+
+#### POST /api/auth/logout
+End the current user session.
+
+**Response** (200):
+```json
+{
+  "success": true
+}
+```
+
+### Mood Entries (All require authentication)
+
+#### POST /api/entries
+Create a new mood entry for the authenticated user.
 
 **Request**:
 ```json
@@ -236,6 +364,7 @@ Create a new mood entry.
 ```json
 {
   "id": "uuid-here",
+  "user_id": "user-uuid",
   "created_at": "2025-12-30T10:00:00Z",
   "entry_date": "2025-12-30",
   "mood": 7,
@@ -243,8 +372,8 @@ Create a new mood entry.
 }
 ```
 
-### GET /api/entries?filter=low_mood
-Get entries, optionally filtered.
+#### GET /api/entries?filter=low_mood
+Get entries for the authenticated user, optionally filtered.
 
 **Query Parameters**:
 - `filter=low_mood` → mood ≤ 3
@@ -252,23 +381,25 @@ Get entries, optionally filtered.
 - `filter=not_safe` → felt_safe = false
 - None → all entries
 
-**Response** (200): Array of entries
+**Response** (200): Array of user's entries
 
-### DELETE /api/entries/[id]
-Delete an entry by ID.
+#### DELETE /api/entries/[id]
+Delete an entry by ID (only if owned by authenticated user).
 
 **Response** (200):
 ```json
 { "success": true }
 ```
 
-### GET /api/export
-Export all entries as JSON.
+### Data Management (Requires authentication)
+
+#### GET /api/export
+Export all entries for the authenticated user as JSON.
 
 **Response** (200): JSON file download
 
-### POST /api/import
-Import and merge entries from JSON.
+#### POST /api/import
+Import and merge entries from JSON for the authenticated user.
 
 **Request**:
 ```json
@@ -292,25 +423,44 @@ Import and merge entries from JSON.
 }
 ```
 
+### Migrations
+
+#### POST /api/migrations
+Run all pending database migrations. Idempotent - safe to run multiple times.
+
+**Response** (200):
+```json
+{
+  "message": "Migrations completed successfully"
+}
+```
+
 ## Security Notes
 
 ### ✅ Implemented
 
+- ✅ User authentication with password hashing (bcryptjs)
+- ✅ Cookie-based session management (httpOnly cookies)
+- ✅ User-scoped data (all entries tied to authenticated users)
 - ✅ Server-side only database access
 - ✅ Parameterized queries (no SQL injection)
 - ✅ Input validation (Zod)
 - ✅ Rate limiting
 - ✅ No secrets in client code
-- ✅ Structured for future auth
+- ✅ Auto-creation of test account in development only
 
 ### 🔒 Future Improvements
 
-- [ ] Add user authentication (OAuth, email, or SSO)
+- [ ] Add OAuth authentication (Google, GitHub)
+- [ ] Implement password reset via email
+- [ ] Add two-factor authentication (2FA)
 - [ ] Implement row-level security (RLS) in PostgreSQL
 - [ ] Add request signing/verification
 - [ ] Use Redis for distributed rate limiting
 - [ ] Add data encryption at rest
 - [ ] Implement audit logging
+- [ ] Add CSRF protection
+- [ ] Implement refresh tokens
 
 ## Troubleshooting
 
@@ -319,11 +469,19 @@ Import and merge entries from JSON.
 - Verify the connection string is correct
 - Restart dev server after updating `.env.local`
 
-### "Table does not exist"
-- Run the migration: `psql -f migrations/001_create_mood_entries.sql`
+### "Table does not exist" or "relation 'users' does not exist"
+- Run the migrations: `curl -X POST http://localhost:3000/api/migrations`
+- Or manually: `psql -f migrations/001_create_mood_entries.sql` and `psql -f migrations/002_add_user_authentication.sql`
 - Check database name is correct
 
+### Can't log in or sign up
+- Ensure migrations have been run (see above)
+- Check that the test account button works (in development mode)
+- Verify database is running and accessible
+- Check browser console for error messages
+
 ### Entries not saving
+- Make sure you're logged in (check for userId cookie in browser dev tools)
 - Check browser console for error messages
 - Verify database is running and accessible
 - Check Vercel logs if deployed
@@ -332,6 +490,11 @@ Import and merge entries from JSON.
 - This is per-IP: 30 requests/minute
 - Wait a minute and try again
 - For MVP; upgrade in production
+
+### Test account not working
+- Ensure you're in development mode (NODE_ENV !== 'production')
+- The test account is auto-created on first login attempt
+- Check migrations have been run
 
 ## Development
 
