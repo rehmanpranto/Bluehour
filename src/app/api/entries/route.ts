@@ -31,10 +31,11 @@ export async function POST(request: NextRequest) {
     // Validation
     const validationResult = CreateMoodEntrySchema.safeParse(body);
     if (!validationResult.success) {
+      // Log validation errors for debugging but return a gentle message
+      console.error('Validation failed:', validationResult.error.flatten().fieldErrors);
       return NextResponse.json(
         {
-          error: 'Please fill in all required fields correctly.',
-          details: validationResult.error.flatten().fieldErrors,
+          error: 'Something went wrong saving your reflection. Please try again.',
         },
         { status: 400 }
       );
