@@ -33,6 +33,21 @@ export async function POST(request: NextRequest) {
     if (!validationResult.success) {
       // Log validation errors for debugging but return a gentle message
       console.error('Validation failed:', validationResult.error.flatten().fieldErrors);
+      console.error('Received body:', JSON.stringify(body, null, 2));
+      console.error('Full validation error:', JSON.stringify(validationResult.error.issues, null, 2));
+      
+      // In development, return more detailed error
+      if (process.env.NODE_ENV === 'development') {
+        return NextResponse.json(
+          {
+            error: 'Validation failed',
+            details: validationResult.error.flatten().fieldErrors,
+            receivedData: body,
+          },
+          { status: 400 }
+        );
+      }
+      
       return NextResponse.json(
         {
           error: 'Something went wrong saving your reflection. Please try again.',
