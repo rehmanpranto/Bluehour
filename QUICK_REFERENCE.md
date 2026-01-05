@@ -122,6 +122,124 @@ POST /api/import                    # Upload JSON
 | "Build fails" | Clear `.next/` folder: `rm -rf .next/` |
 | "Entries not saving" | Check browser console (F12), verify database connection |
 
+### Debugging 400 Bad Request Errors
+
+A **400 Bad Request** means the server rejected your request as invalid. Follow these steps:
+
+#### 1. Inspect the Request
+```bash
+# Open Chrome DevTools (F12) → Network tab
+# Reproduce the error and click the failed request
+# Check: URL, Method, Headers, Cookies, Payload
+```
+
+#### 2. Common Causes & Fixes
+
+**Missing or Invalid Payload**
+- Ensure all required fields are present: `entry_date`, `mood`, `anxiety`, `energy`, `felt_safe`
+- Verify JSON is valid (no trailing commas, correct types)
+- Check that mood/anxiety/energy are integers 1-10
+
+**Authentication Issues**
+- Verify you're logged in (check for `userId` cookie in DevTools → Application → Cookies)
+- Try logging out and back in
+- Clear site data if cookies look corrupted
+
+**Invalid Data Types**
+```javascript
+// ❌ WRONG - strings instead of numbers
+{ mood: "7", anxiety: "3" }
+
+// ✅ CORRECT - numbers
+{ mood: 7, anxiety: 3 }
+```
+
+**Missing Content-Type Header**
+- API expects `Content-Type: application/json`
+- Browser should set this automatically, but verify in Network tab
+
+#### 3. Check Server Logs
+
+**Local Development:**
+- Check your terminal where `npm run dev` is running
+- Look for validation errors logged by the API
+
+**Production (Vercel):**
+- Go to Vercel Dashboard → Your Project → Functions
+- Click on the failed function to see logs
+- Enhanced error logging shows validation details in development mode
+
+#### 4. Test with cURL/PowerShell
+
+**PowerShell Example:**
+```powershell
+$headers = @{ 
+  "Content-Type" = "application/json"
+  "Cookie" = "userId=YOUR_USER_ID_HERE"
+}
+$body = @{
+  entry_date = "2026-01-05"
+  mood = 7
+  anxiety = 3
+  energy = 5
+  notes = "test entry"
+  triggers = ""
+  helped = ""
+  felt_safe = $true
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri 'http://localhost:3000/api/entries' `
+  -Method Post -Headers $headers -Body $body
+```
+
+**cURL Example:**
+```bash
+curl -X POST 'http://localhost:3000/api/entries' \
+  -H 'Content-Type: application/json' \
+  -H 'Cookie: userId=YOUR_USER_ID_HERE' \
+  -d '{
+    "entry_date":"2026-01-05",
+    "mood":7,
+    "anxiety":3,
+    "energy":5,
+    "notes":"test",
+    "triggers":"",
+    "helped":"",
+    "felt_safe":true
+  }'
+```
+
+#### 5. Verify Database Schema
+```bash
+# Connect to your database
+psql $DATABASE_URL
+
+# Check tables exist
+\dt
+
+# Verify columns
+\d mood_entries
+\d users
+
+# Check if you have entries
+SELECT COUNT(*) FROM mood_entries;
+SELECT COUNT(*) FROM users;
+```
+
+#### 6. Common Field Requirements
+
+| Field | Type | Required | Valid Range |
+|-------|------|----------|-------------|
+| entry_date | string | Yes | YYYY-MM-DD format |
+| mood | integer | Yes | 1-10 |
+| anxiety | integer | Yes | 1-10 |
+| energy | integer | Yes | 1-10 |
+| felt_safe | boolean | Yes | true/false |
+| notes | string | No | Max 2000 chars |
+| triggers | string | No | Comma-separated |
+| helped | string | No | Comma-separated |
+| entry_time_label | string | No | Max 50 chars |
+
 ---
 
 ## 📋 Validation Rules
