@@ -91,7 +91,7 @@ export default function HistoryPage() {
             <div>
               <h4 className="font-bold text-amber-900 mb-1">A Gentle Reminder</h4>
               <p className="text-sm text-amber-800">
-                This tool supports reflection and self-awareness. It's not a substitute for professional mental health care.
+                This tool supports reflection and self-awareness. It&apos;s not a substitute for professional mental health care.
               </p>
             </div>
           </div>

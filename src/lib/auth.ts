@@ -56,6 +56,7 @@ export async function verifyUserCredentials(email: string, password: string) {
   }
   
   // Return user without password hash
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password_hash, ...userWithoutPassword } = user;
   return userWithoutPassword;
 }

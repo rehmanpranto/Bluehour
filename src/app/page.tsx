@@ -54,13 +54,13 @@ export default async function Home() {
           <div className="rounded-2xl border border-emerald-100 dark:border-emerald-800 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 shadow-md">
             <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">🌿 Gentle language</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-              No harsh labels—just space to notice what's true for you today.
+              No harsh labels—just space to notice what&apos;s true for you today.
             </p>
           </div>
           <div className="rounded-2xl border border-cyan-100 dark:border-cyan-800 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 shadow-md">
             <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">📈 See patterns</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-              Review your history and a simple 7‑day report whenever you're ready.
+              Review your history and a simple 7‑day report whenever you&apos;re ready.
             </p>
           </div>
         </div>
@@ -75,7 +75,7 @@ export default async function Home() {
               <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Your reflections</h3>
               <span className="text-2xl">📖</span>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Browse past check-ins and notice what's been changing.</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Browse past check-ins and notice what&apos;s been changing.</p>
           </Link>
 
           <Link
@@ -95,7 +95,7 @@ export default async function Home() {
               <div>
                 <h4 className="font-bold text-amber-900 dark:text-amber-300 mb-1">A gentle reminder</h4>
                 <p className="text-sm text-amber-800 dark:text-amber-400">
-                  This app supports reflection and self-awareness. If you're in immediate danger or crisis,
+                  This app supports reflection and self-awareness. If you&apos;re in immediate danger or crisis,
                   please contact local emergency services.
                 </p>
               </div>

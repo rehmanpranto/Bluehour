@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
+import Link from "next/link";
 import UserMenu from "@/components/UserMenu";
 import "./globals.css";
 
@@ -32,12 +33,12 @@ export default function RootLayout({
           {/* Header Navigation */}
           <header className="border-b border-teal-100 bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
             <nav className="mx-auto max-w-6xl px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
-              <a
+              <Link
                 href="/"
                 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent hover:from-teal-700 hover:to-cyan-700 transition"
               >
                 🌊 Blue Hour
-              </a>
+              </Link>
               <div className="flex gap-3 sm:gap-6 md:gap-8 items-center">
                 <a
                   href="/checkin"

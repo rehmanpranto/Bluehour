@@ -1,17 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
   useEffect(() => {
     // Function to check if it's night time (6 PM - 6 AM)
     const checkTimeAndSetTheme = () => {
       const hour = new Date().getHours();
       const isNightTime = hour >= 18 || hour < 6; // 6 PM (18:00) to 6 AM
-      
-      setIsDarkMode(isNightTime);
       
       // Update document class
       if (isNightTime) {
