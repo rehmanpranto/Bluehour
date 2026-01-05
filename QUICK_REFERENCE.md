@@ -1,17 +1,19 @@
-# Rideeta - Quick Reference Card
+# Blue Hour - Quick Reference Card
 
 ## 🚀 Quick Start (5 Minutes)
 
 ### 1. Set Up Database
 ```bash
-# Get connection string from Neon (neon.tech)
-# Create .env.local in project root
-DATABASE_URL=postgresql://user:password@host/dbname?sslmode=require
+# Create .env.local in project root with your database URL
+DATABASE_URL=your_database_connection_string
 ```
 
 ### 2. Run Migration
 ```bash
+# Run all migration files in order
 psql $DATABASE_URL < migrations/001_create_mood_entries.sql
+psql $DATABASE_URL < migrations/002_add_user_authentication.sql
+psql $DATABASE_URL < migrations/003_add_user_id_to_mood_entries.sql
 ```
 
 ### 3. Start Dev Server
@@ -28,15 +30,14 @@ npm run dev
 | File | Purpose |
 |------|---------|
 | `.env.local` | Database URL (create, don't commit) |
-| `src/app/page.tsx` | Home check-in page |
+| `src/app/page.tsx` | Landing page |
 | `src/app/history/page.tsx` | History view |
 | `src/app/api/entries/route.ts` | CRUD operations |
+| `src/app/api/auth/login/route.ts` | Authentication |
 | `src/lib/db.ts` | Database connection |
 | `src/lib/schemas.ts` | Validation rules |
-| `migrations/001_...` | Database schema |
+| `migrations/` | Database migrations |
 | `README.md` | Full documentation |
-| `SETUP.md` | Detailed setup guide |
-| `DATABASE.md` | Schema reference |
 
 ---
 

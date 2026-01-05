@@ -8,7 +8,6 @@ A production-ready, trauma-informed mood logging application built with Next.js,
 - Secure login and signup system
 - Password hashing with bcryptjs
 - Cookie-based session management
-- Test account for development: `test@bluehour.local` / `test12345`
 - User-scoped data (all entries tied to authenticated users)
 
 ### 2. **Landing Page**
@@ -209,11 +208,10 @@ You should see:
 
 ### 7. Test the App
 
-1. **Create an account or use test account**:
+1. **Create an account**:
    - Go to [http://localhost:3000](http://localhost:3000)
    - Click "Login / Create account"
-   - For testing: Click "Use Test Account" button (test@bluehour.local / test12345)
-   - Or sign up with your own email and password
+   - Sign up with your email and password
 
 2. **Log in**:
    - After login, you'll be automatically redirected to the check-in page
@@ -327,8 +325,6 @@ Authenticate a user and create a session.
   "email": "user@example.com"
 }
 ```
-
-**Note**: In development mode, the test account (test@bluehour.local / test12345) is auto-created if it doesn't exist.
 
 #### POST /api/auth/logout
 End the current user session.
