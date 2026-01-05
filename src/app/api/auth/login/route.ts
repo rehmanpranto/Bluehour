@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { LoginSchema } from '@/lib/schemas';
-import { verifyUserCredentials, findUserByEmail, createUser } from '@/lib/auth';
+import { verifyUserCredentials } from '@/lib/auth';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
@@ -20,47 +20,6 @@ export async function POST(request: NextRequest) {
 
     // Validate input
     const validatedData = LoginSchema.parse(body);
-
-    // Dev-only: support a demo/test account without manual setup
-    if (!isProduction && validatedData.email === 'test@bluehour.local') {
-      const testPassword = 'test12345';
-
-      let existing = await findUserByEmail(validatedData.email);
-      if (!existing) {
-        await createUser(validatedData.email, testPassword, 'Test User');
-        existing = await findUserByEmail(validatedData.email);
-      }
-
-      // If they typed the wrong password, keep this behavior predictable.
-      if (validatedData.password !== testPassword || !existing) {
-        return NextResponse.json(
-          { error: 'Invalid email or password.' },
-          { status: 401 }
-        );
-      }
-
-      const response = NextResponse.json(
-        {
-          message: 'Login successful!',
-          user: {
-            id: existing.id,
-            email: existing.email,
-            full_name: existing.full_name,
-          },
-        },
-        { status: 200 }
-      );
-
-      response.cookies.set('userId', existing.id, {
-        httpOnly: true,
-        secure: isProduction,
-        sameSite: 'lax',
-        maxAge: 60 * 60 * 24 * 7,
-        path: '/',
-      });
-
-      return response;
-    }
 
     // Verify credentials
     const user = await verifyUserCredentials(

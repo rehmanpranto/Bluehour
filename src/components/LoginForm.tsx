@@ -18,17 +18,6 @@ export default function LoginForm() {
   });
   const router = useRouter();
 
-  const fillTestAccount = () => {
-    setIsSignUp(false);
-    setMessage(null);
-    setFormData((prev) => ({
-      ...prev,
-      email: 'test@bluehour.local',
-      password: 'test12345',
-      full_name: '',
-    }));
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -84,7 +73,7 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       {/* Message Display */}
       {message && (
         <div
@@ -162,7 +151,7 @@ export default function LoginForm() {
       </button>
 
       {/* Toggle Sign Up / Login */}
-      <div className="text-center">
+      <div className="text-center space-y-4">
         <p className="text-sm text-gray-600">
           {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
           <button
@@ -177,32 +166,6 @@ export default function LoginForm() {
           </button>
         </p>
       </div>
-
-      {/* Test Account Helper (dev only) */}
-      {process.env.NODE_ENV !== 'production' && !isSignUp && (
-        <div className="rounded-xl border border-teal-200 bg-teal-50 p-4">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-sm font-semibold text-teal-900">
-                Need a quick test login?
-              </p>
-              <p className="text-xs text-teal-800 mt-1">
-                You can use a demo account while you’re building.
-              </p>
-              <p className="text-xs text-teal-800 mt-2 font-mono">
-                test@bluehour.local / test12345
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={fillTestAccount}
-              className="shrink-0 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-teal-700 border border-teal-200 hover:bg-teal-100 transition"
-            >
-              Use test account
-            </button>
-          </div>
-        </div>
-      )}
     </form>
   );
 }
